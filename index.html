@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Learn with Ms. Thúy</title>
+    <style>
+        :root {
+            --primary-pink: #ffafbd;
+            --primary-blue: #c9ffbf;
+            --text-color: #4a4a4a;
+            --correct-green: #2ecc71;
+            --wrong-red: #e74c3c;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #ffafbd 0%, #ffc3a0 50%, #c9ffbf 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: var(--text-color);
+        }
+
+        .container {
+            background: rgba(255, 255, 255, 0.9);
+            width: 95%;
+            max-width: 1100px;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            padding: 40px;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        header {
+            text-align: center;
+        }
+
+        header h1 {
+            color: #ff6b6b;
+            margin: 0;
+            font-size: 2.5em;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.05);
+        }
+
+        .content-wrapper {
+            display: grid;
+            grid-template-columns: 350px 1fr; /* Tăng độ rộng cột trái */
+            gap: 40px;
+        }
+
+        /* Cột trái: Audio - Đã chỉnh dài ra */
+        .audio-section {
+            background: #fff;
+            padding: 30px 20px;
+            border-radius: 15px;
+            border: 2px dashed var(--primary-pink);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-start;
+            text-align: center;
+            height: fit-content;
+        }
+
+        .audio-placeholder {
+            width: 100%; /* Chiều rộng tối đa để dễ tua */
+            margin-top: 20px;
+        }
+
+        /* Cột phải: Transcript */
+        .transcript-section {
+            line-height: 2.5;
+            font-size: 1.15em;
+            background: white;
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: inset 0 0 10px rgba(0,0,0,0.02);
+        }
+
+        input {
+            border: none;
+            border-bottom: 2px solid var(--primary-pink);
+            background: transparent;
+            width: 110px;
+            text-align: center;
+            font-size: inherit;
+            color: #333;
+            transition: all 0.3s;
+            margin: 0 5px;
+        }
+
+        input:focus {
+            outline: none;
+            border-bottom-color: #ff6b6b;
+            background: #fff9fa;
+        }
+
+        .correct {
+            color: var(--correct-green) !important;
+            border-bottom: 2px solid var(--correct-green);
+            font-weight: bold;
+        }
+
+        .wrong {
+            color: var(--wrong-red) !important;
+            border-bottom: 2px solid var(--wrong-red);
+        }
+
+        .feedback {
+            font-size: 0.9em;
+            color: var(--wrong-red);
+            font-weight: bold;
+            margin-right: 5px;
+        }
+
+        .btn-check {
+            background: #ff6b6b;
+            color: white;
+            border: none;
+            padding: 15px 40px;
+            border-radius: 30px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 1.1em;
+            transition: all 0.3s;
+            align-self: center;
+            box-shadow: 0 4px 15px rgba(255,107,107,0.3);
+        }
+
+        .btn-check:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(255,107,107,0.4);
+            background: #ff5252;
+        }
+
+        #result-text {
+            text-align: center;
+            font-weight: bold;
+            font-size: 1.4em;
+            margin-top: 10px;
+            color: #ff6b6b;
+        }
+
+        @media (max-width: 900px) {
+            .content-wrapper { grid-template-columns: 1fr; }
+            .audio-section { order: -1; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <header>
+        <h1>🌸 Learn with Ms. Thúy 🌸</h1>
+        <p>Listen carefully and fill in the missing keywords</p>
+    </header>
+
+    <div class="content-wrapper">
+        <div class="audio-section">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/4/49/Chopsticks_on_a_dish.jpg" width="120" alt="Audio Icon">
+            <p style="margin-top: 15px;"><strong>Mindset Level 1 - Track 36</strong></p>
+            <audio controls class="audio-placeholder">
+                <source src="https://github.com/ms-thuy-classes/audio/raw/refs/heads/main/Mindset_L1_36.mp3" type="audio/mpeg">
+                Your browser does not support the audio element.
+            </audio>
+            <p style="font-size: 0.8em; color: #888; margin-top: 10px;">(Use the bar above to seek/tua)</p>
+        </div>
+
+        <div class="transcript-section">
+            <span id="text-content"></span>
+        </div>
+    </div>
+
+    <button class="btn-check" onclick="checkAnswers()">Check My Score!</button>
+    <div id="result-text"></div>
+</div>
+
+<script>
+    const data = [
+        "I suppose one thing that everybody knows about Japanese, Chinese and Korean cooking is that they all use ", { t: "chopsticks", q: true }, 
+        " rather than ", { t: "knives", q: true }, " and forks like people in the West. The chopsticks that people use in the different countries are quite different though. In China the chopsticks tend to be made of ", 
+        { t: "wood", q: true }, " and are ", { t: "round", q: true }, " at the end, whereas in Korea they're made of ", 
+        { t: "stainless steel", q: true }, " and are ", { t: "rough", q: true }, " at the end. This is because in the past the ", 
+        { t: "emperor", q: true }, " would use silver chopsticks, as they changed colour if there was any ", 
+        { t: "poison", q: true }, " in the dish. They can be quite tricky to use, but in Korea people use a ", 
+        { t: "spoon", q: true }, " to eat their rice. In Japan they use a variety of things to make chopsticks. Wood and ", 
+        { t: "plastic", q: true }, " are the most popular now, but you can find bone, metal and even ", 
+        { t: "ivory", q: true }, " ones. If we look at the food of the different countries, it's very difficult to talk about China in general terms because it has many different ", 
+        { t: "cuisines", q: true }, ". So it might be better if we look at Korean and Japanese food a little more. It's well known that Koreans tend to like ", 
+        { t: "spicier", q: true }, " food and red peppers can be found in a wide number of dishes. I suppose that everybody thinks of ", 
+        { t: "sushi", q: true }, " when they think of Japanese food, but you can also find a lot of ", 
+        { t: "influences", q: true }, " from all over Asia and even Europe, for example ", { t: "tempura", q: true }, 
+        ", which came to Japan from Portugal. Those aren't present in Chinese and Korean food. <br><br>",
+
+        { t: "Traditionally", q: true }, ", in both Japan and in Korea ", { t: "meat", q: true }, 
+        " plays less of an important role than in Europe, perhaps because it's so expensive due to the ", 
+        { t: "lack", q: true }, " of space for keeping animals. That said, both the Japanese and Koreans enjoy meat. ", 
+        { t: "Barbecues", q: true }, " of all types are popular in Korea and beef forms the basis of many special meals in both of the countries. Now moving back to Chinese cuisine ..."
+    ];
+
+    const contentBox = document.getElementById('text-content');
+    
+    data.forEach((item, index) => {
+        if (typeof item === 'string') {
+            contentBox.innerHTML += item;
+        } else if (item.q) {
+            contentBox.innerHTML += `<input type="text" data-answer="${item.t}" id="input-${index}" autocomplete="off">`;
+        }
+    });
+
+    function checkAnswers() {
+        let score = 0;
+        let total = 0;
+        const inputs = document.querySelectorAll('input');
+
+        inputs.forEach(input => {
+            total++;
+            const userAnswer = input.value.trim().toLowerCase();
+            const correctAnswer = input.dataset.answer.toLowerCase();
+            
+            const oldFeedback = input.nextElementSibling;
+            if (oldFeedback && oldFeedback.classList.contains('feedback')) {
+                oldFeedback.remove();
+            }
+
+            if (userAnswer === correctAnswer) {
+                score++;
+                input.className = 'correct';
+            } else {
+                input.className = 'wrong';
+                const feedback = document.createElement('span');
+                feedback.className = 'feedback';
+                feedback.innerText = ` (${input.dataset.answer})`;
+                input.parentNode.insertBefore(feedback, input.nextSibling);
+            }
+        });
+
+        document.getElementById('result-text').innerText = `🎉 Your Score: ${score} / ${total} 🎉`;
+        window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
+    }
+</script>
+
+</body>
+</html>
